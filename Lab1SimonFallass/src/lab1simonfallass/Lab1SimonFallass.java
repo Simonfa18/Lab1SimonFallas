@@ -4,6 +4,8 @@
  */
 package lab1simonfallass;
 
+import GUI.ExploradorArchivos;
+
 /**
  *
  * @author laboratorios
@@ -14,7 +16,8 @@ public class Lab1SimonFallass {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
+        ExploradorArchivos explorador = new ExploradorArchivos();
+        explorador.setVisible(true);
     }
     
 }
