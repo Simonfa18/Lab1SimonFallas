@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import Data.ManejoImagen;
 import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -27,7 +28,7 @@ import javax.swing.SwingConstants;
  */
 public class ExploradorArchivos extends JFrame {
 
-  private JLabel etiquetaImagen;
+    private JLabel etiquetaImagen;
     private BufferedImage imagenCargada;
     private File archivoOriginal;
 
@@ -49,9 +50,15 @@ public class ExploradorArchivos extends JFrame {
                 if (opcion == JFileChooser.APPROVE_OPTION) {
                     File archivo = selectorArchivos.getSelectedFile();
                     try {
-                        BufferedImage img = ImageIO.read(archivo);
+                        if (!ManejoImagen.formatoValido(archivo)) {
+                            JOptionPane.showMessageDialog(ExploradorArchivos.this,
+                                    "Formato no permitido. Solo JPG o PNG.");
+                            return;
+                        }
+                        BufferedImage img = ManejoImagen.cargarImagen(archivo);
                         if (img == null) {
-                            JOptionPane.showMessageDialog(ExploradorArchivos.this, "El formato de la imagen no es soportado.");
+                            JOptionPane.showMessageDialog(ExploradorArchivos.this,
+                                    "El formato de la imagen no es soportado.");
                             return;
                         }
                         imagenCargada = img;
@@ -64,7 +71,8 @@ public class ExploradorArchivos extends JFrame {
                         etiquetaImagen.setIcon(new ImageIcon(imagenEscalada));
                         etiquetaImagen.setText("");
                     } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(ExploradorArchivos.this, "Error al cargar la imagen: " + ex.getMessage());
+                        JOptionPane.showMessageDialog(ExploradorArchivos.this,
+                                "Error al cargar la imagen: " + ex.getMessage());
                     }
                 }
             }
@@ -74,21 +82,19 @@ public class ExploradorArchivos extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (imagenCargada != null && archivoOriginal != null) {
-                    String nombreArchivo = archivoOriginal.getName().toLowerCase();
-                    if (!(nombreArchivo.endsWith(".png") || nombreArchivo.endsWith(".jpg"))) {
-                        JOptionPane.showMessageDialog(ExploradorArchivos.this, "Formato no permitido. Solo se puede guardar como PNG o JPG.");
-                        return;
-                    }
                     try {
-                        String formato = nombreArchivo.endsWith(".png") ? "png" : "jpg";
-                        ImageIO.write(imagenCargada, formato, archivoOriginal);
-                        JOptionPane.showMessageDialog(ExploradorArchivos.this, "Imagen guardada correctamente.");
+                        String formato = archivoOriginal.getName().toLowerCase().endsWith(".png") ? "png" : "jpg";
+                        ManejoImagen.guardarImagen(imagenCargada, archivoOriginal, formato);
+                        JOptionPane.showMessageDialog(ExploradorArchivos.this,
+                                "Imagen guardada correctamente.");
                         mostrarImagenEnNuevaVentana(imagenCargada);
                     } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(ExploradorArchivos.this, "Error al guardar la imagen: " + ex.getMessage());
+                        JOptionPane.showMessageDialog(ExploradorArchivos.this,
+                                "Error al guardar la imagen: " + ex.getMessage());
                     }
                 } else {
-                    JOptionPane.showMessageDialog(ExploradorArchivos.this, "No hay imagen cargada para guardar.");
+                    JOptionPane.showMessageDialog(ExploradorArchivos.this,
+                            "No hay imagen cargada para guardar.");
                 }
             }
         });
