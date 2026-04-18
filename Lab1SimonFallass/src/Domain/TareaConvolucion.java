@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
  *
  * @author laboratorios
  */
-public class TareaConvolucion {
+public class TareaConvolucion extends Thread{
     
     private BufferedImage  imagenOriginal;
     private BufferedImage imagenResuldado;
