@@ -5,13 +5,14 @@
 package GUI;
 
 import Data.ManejoImagen;
+import Domain.ConvolucionBorde;
+import Domain.ProcesarImagen;
 import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -116,6 +117,7 @@ public class ExploradorArchivos extends JFrame {
         JFrame ventanaImagen = new JFrame("Imagen Guardada");
         ventanaImagen.setSize(800, 600);
         ventanaImagen.setLocationRelativeTo(null);
+        ventanaImagen.setLayout(new BorderLayout());
 
         int ancho = ventanaImagen.getWidth();
         int alto = ventanaImagen.getHeight();
@@ -124,7 +126,45 @@ public class ExploradorArchivos extends JFrame {
         JLabel etiqueta = new JLabel(new ImageIcon(imagenEscalada));
         etiqueta.setHorizontalAlignment(SwingConstants.CENTER);
 
-        ventanaImagen.add(new JScrollPane(etiqueta));
+       
+        JPanel panelBotones = new JPanel();
+        JButton botonProcesar = new JButton("Procesar");
+        JButton botonVolver = new JButton("Volver");
+
+        panelBotones.add(botonProcesar);
+        panelBotones.add(botonVolver);
+
+        ventanaImagen.add(panelBotones, BorderLayout.NORTH);
+        ventanaImagen.add(new JScrollPane(etiqueta), BorderLayout.CENTER);
+
+        botonProcesar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+
+                    ProcesarImagen procesador = new ProcesarImagen(archivoOriginal.getAbsolutePath(), 4);
+
+                    BufferedImage procesada = procesador.procesarYMarcar(new ConvolucionBorde());
+
+                    BufferedImage marcada = procesador.marcarObjeto(procesada);
+
+                    Image imgEscalada = marcada.getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
+                    etiqueta.setIcon(new ImageIcon(imgEscalada));
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(ventanaImagen,
+                            "Error al procesar la imagen: " + ex.getMessage());
+                }
+            }
+        });
+
+        botonVolver.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ventanaImagen.dispose(); // cierra la ventana secundaria
+            }
+        });
+
         ventanaImagen.setVisible(true);
     }
 }
