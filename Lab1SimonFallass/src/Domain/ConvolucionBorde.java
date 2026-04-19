@@ -22,6 +22,6 @@ public class ConvolucionBorde extends Convolucion {
     @Override
     public float getDivisor() {
         return 1.0f;
-    }
+    } // subir
 
 }

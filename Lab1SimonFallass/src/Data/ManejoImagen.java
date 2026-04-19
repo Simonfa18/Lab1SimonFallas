@@ -11,24 +11,28 @@ import javax.imageio.ImageIO;
 
 /**
  *
- * @author laboratorios
+ * @author PC
  */
 public class ManejoImagen {
 
-   
     public static BufferedImage cargarImagen(File archivo) throws IOException {
+
         return ImageIO.read(archivo);
+
     }
 
-  
     public static void guardarImagen(BufferedImage imagen, File archivo, String formato) throws IOException {
+
         ImageIO.write(imagen, formato, archivo);
-    }
 
-  
+    } // Metodo con el fin de guardar la imagen en un futuro
+
     public static boolean formatoValido(File archivo) {
-        String nombre = archivo.getName().toLowerCase();
-        return nombre.endsWith(".jpg") || nombre.endsWith(".png");
-    }
-}
 
+        String nombre = archivo.getName().toLowerCase();
+
+        return nombre.endsWith(".jpg") || nombre.endsWith(".png");
+
+    } //subir
+
+}

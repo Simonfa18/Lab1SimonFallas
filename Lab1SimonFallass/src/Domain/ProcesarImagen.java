@@ -46,7 +46,7 @@ public class ProcesarImagen {
         }
 
         return marcarObjeto(resultadoProcesado);
-    } //procesar y marcar
+    } //procesar y marcar subir
 
     public BufferedImage marcarObjeto(BufferedImage imagenLimpia) {
         int ancho = imagenLimpia.getWidth();

@@ -77,7 +77,7 @@ public class ExploradorArchivos extends JFrame {
                     }
                 }
             }
-        });
+        }); // subir todo
 
         botonGuardar.addActionListener(new ActionListener() {
             @Override

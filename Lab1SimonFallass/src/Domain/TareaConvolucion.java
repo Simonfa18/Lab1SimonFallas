@@ -11,68 +11,67 @@ import java.awt.image.BufferedImage;
  *
  * @author laboratorios
  */
-public class TareaConvolucion extends Thread{
-    
-    private BufferedImage  imagenOriginal;
-    private BufferedImage imagenResuldado;
-    
+public class TareaConvolucion extends Thread {
+
+    private BufferedImage imagenOriginal;
+    private BufferedImage imagenResultado;
     private Convolucion convolucion;
     private int yInicio;
     private int yFin;
 
-    public TareaConvolucion(BufferedImage imagenOriginal, BufferedImage imagenResuldado, Convolucion convolucion, int yInicio, int yFin) {
+    public TareaConvolucion(BufferedImage imagenOriginal, BufferedImage imagenResultado, Convolucion convolucion, int yInicio, int yFin) {
         this.imagenOriginal = imagenOriginal;
-        this.imagenResuldado = imagenResuldado;
+        this.imagenResultado = imagenResultado;
         this.convolucion = convolucion;
         this.yInicio = yInicio;
         this.yFin = yFin;
-    } // constructor
-    
-    
-    
-    public void run(){
-        
-        int w=this.imagenOriginal.getWidth();
-        float[][] kernel=this.convolucion.getKernel();
-        float divisor=this.convolucion.getDivisor();
-        
-        for (int y = yInicio; y < yFin; y++) {
-            for (int x = 1; x < w-1; x++) {
-                this.imagenResuldado.setRGB(
-                        x,
-                        y,
-                        aplicarKernel(x, y, kernel, divisor)
-                );
-            } // for x
-        } // for y
-        
-    } // run
-    
-    private int aplicarKernel(int x, int y,
-            float[][] kernel, float divisor){
-    
-        float r=0, g=0, b=0;
-        
-        for (int i = -1; i <= 1; i++) {
-            for (int j = -1; j <= 1; j++) {
-                Color c=new Color(this.imagenOriginal.getRGB(x+i, y+j));
-                r+=c.getRed()*kernel[i+1][j+1];
-                g+=c.getGreen()*kernel[i+1][j+1];
-                b+=c.getBlue()*kernel[i+1][j+1];
-            } // for j 
-        } // for i
-        
-        // Normalizar
-        
-        int red=Math.min(Math.max((int)(r/divisor), 0), 255);
-        int green=Math.min(Math.max((int)(g/divisor), 0), 255);
-        int blue=Math.min(Math.max((int)(b/divisor), 0), 255);
-        
-        return new Color(red, green, blue).getRGB();
-        
-    } // aplicarKernel
-    
-   
-} // fin clases
+    }
 
+    public void run() {
+        int ancho = this.imagenOriginal.getWidth();
+        int alto = this.imagenOriginal.getHeight(); // Necesitamos el alto total
+        float[][] kernel = this.convolucion.getKernel();
+        float divisor = this.convolucion.getDivisor();
+        for (int y = yInicio; y < yFin; y++) {
+            for (int x = 1; x < ancho - 1; x++) {
+
+                if (y > 0 && y < alto - 1) {
+                    this.imagenResultado.setRGB(
+                            x,
+                            y,
+                            aplicarKernel(x, y, kernel, divisor)
+                    );
+                }
+            }
+        }
+    } // run subir
+
+    private int aplicarKernel(int x, int y, float[][] kernel, float divisor) {
+        float sumaR = 0, sumaG = 0, sumaB = 0;
+
+        for (int fila = -1; fila <= 1; fila++) {
+            for (int columna = -1; columna <= 1; columna++) {
+
+                int rgb = this.imagenOriginal.getRGB(x + fila, y + columna);
+
+                int r = (rgb >> 16) & 0xFF;
+                int g = (rgb >> 8) & 0xFF;
+                int b = rgb & 0xFF;
+
+                float valorKernel = kernel[fila + 1][columna + 1];
+
+                sumaR += r * valorKernel;
+                sumaG += g * valorKernel;
+                sumaB += b * valorKernel;
+            }
+        }
+
+        int red = Math.min(Math.max((int) (sumaR / divisor), 0), 255);
+        int green = Math.min(Math.max((int) (sumaG / divisor), 0), 255);
+        int blue = Math.min(Math.max((int) (sumaB / divisor), 0), 255);
+
+        return (255 << 24) | (red << 16) | (green << 8) | blue;
+    } //aplicarkernel
+
+} // fin clases
 

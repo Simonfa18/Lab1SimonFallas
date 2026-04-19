@@ -13,4 +13,4 @@ public abstract class Convolucion {
     public abstract float[][] getKernel();
 
     public abstract float getDivisor();
-} // fin de la clase
+} // fin de la clase subir
