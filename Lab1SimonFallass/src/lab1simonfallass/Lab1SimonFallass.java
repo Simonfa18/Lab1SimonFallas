@@ -20,4 +20,4 @@ public class Lab1SimonFallass {
         explorador.setVisible(true);
     }
     
-} // todo el proyecto
+} // todo el proyecto 
